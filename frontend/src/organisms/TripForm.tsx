@@ -1,34 +1,13 @@
 import React, { useState } from "react";
-import { Trip } from "../types";
+import { TripFormData } from "../types";
 import { Button } from "../atoms/Button";
 import { LocationInput } from "../molecules/LocationInput";
 import { FormInput } from "../atoms/FormInput";
 
 interface TripFormProps {
-  onSubmit: (
-    trip: Omit<Trip, "id" | "created_at" | "updated_at" | "eld_logs">
-  ) => Promise<void>;
+  onSubmit: (trip: TripFormData) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
-}
-
-interface FormData {
-  pickup_location: {
-    lat: number;
-    lng: number;
-    address: string;
-  };
-  dropoff_location: {
-    lat: number;
-    lng: number;
-    address: string;
-  };
-  current_location: {
-    lat: number;
-    lng: number;
-    address: string;
-  };
-  current_cycle_used: number;
 }
 
 export const TripForm: React.FC<TripFormProps> = ({
@@ -36,7 +15,7 @@ export const TripForm: React.FC<TripFormProps> = ({
   onCancel,
   isLoading,
 }) => {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<TripFormData>({
     pickup_location: {
       lat: 0,
       lng: 0,

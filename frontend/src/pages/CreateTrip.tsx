@@ -1,15 +1,13 @@
 import React from "react";
 import { TripForm } from "../organisms/TripForm";
 import { api } from "../services/api";
-import { Trip } from "../types";
+import { TripFormData } from "../types";
 import { useNavigate } from "react-router-dom";
 
 export const CreateTrip: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = async (
-    trip: Omit<Trip, "id" | "created_at" | "updated_at" | "eld_logs">
-  ) => {
+  const handleSubmit = async (trip: TripFormData) => {
     try {
       const newTrip = await api.createTrip(trip);
       navigate(`/trips/${newTrip.id}`);

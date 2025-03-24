@@ -33,3 +33,22 @@ export interface ELDLog {
   remarks?: string;
   created_at: string;
 }
+
+export interface TripFormData {
+  pickup_location: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  dropoff_location: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  current_location: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  current_cycle_used: number;
+}

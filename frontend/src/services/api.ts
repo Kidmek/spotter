@@ -1,13 +1,11 @@
 import axios from "axios";
-import { Trip, ELDLog } from "../types";
+import { ELDLog, TripFormData } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 export const api = {
   // Trip endpoints
-  createTrip: async (
-    trip: Omit<Trip, "id" | "created_at" | "updated_at" | "eld_logs">
-  ) => {
+  createTrip: async (trip: TripFormData) => {
     const response = await axios.post(`${API_URL}/trips/`, trip);
     return response.data;
   },
