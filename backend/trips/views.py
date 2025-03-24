@@ -10,7 +10,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from io import BytesIO
-from datetime import datetime, timedelta
+from datetime import datetime, time,timezone
 from .models import Trip, ELDLog
 from .serializers import TripSerializer, ELDLogSerializer
 from django.core.exceptions import ValidationError
@@ -59,14 +59,24 @@ def add_log(request, trip_id):
             last_log = trip.eld_logs.order_by('-end_time').first()
             
             # Validate that the new log's end_time is after the last log's end_time
-            if last_log and serializer.validated_data['end_time'] <= last_log.end_time:
+            if last_log and serializer.validated_data['end_time'] < last_log.end_time:
                 return Response(
-                    {'end_time': ['New log end time must be after the last log end time']},
+                    {'end_time': ['New log end time must be after the last log end time , which is ' + str(last_log.end_time.strftime("%Y-%m-%d %H:%M:%S"))]},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
             # Set start_time based on whether this is the first log or not
             if last_log is None:
+              
+                first_off_duty_log = ELDLog.objects.create(
+                    trip=trip,
+                    status='OFF_DUTY',
+                    end_time=trip.created_at,
+                    location=trip.current_location,
+                    start_time= trip.created_at.replace(hour=0, minute=0, second=0, microsecond=0),
+                    remarks='Trip started'
+                )
+                first_off_duty_log.save()
                 # If this is the first log, use the trip's creation time
                 start_time = trip.created_at
             else:

@@ -70,12 +70,6 @@ class Trip(models.Model):
         if off_duty_hours < self.REQUIRED_OFF_DUTY_HOURS:
             raise ValidationError(f"Off-duty hours ({off_duty_hours}) are less than required ({self.REQUIRED_OFF_DUTY_HOURS})")
 
-    def update_cycle_used(self):
-        """Update the current_cycle_used field"""
-        self.current_cycle_used = self.calculate_cycle_used()
-        # self.validate_regulatory_limits()
-        self.save()
-
     def __str__(self):
         return f"Trip from {self.pickup_location.get('address', '')} to {self.dropoff_location.get('address', '')}"
 
@@ -102,14 +96,6 @@ class ELDLog(models.Model):
         """Validate the log entry"""
         if self.end_time <= self.start_time:
             raise ValidationError("End time must be after start time")
-
-    def save(self, *args, **kwargs):
-        # Validate the log entry
-        self.clean()
-        # Save the log first
-        super().save(*args, **kwargs)
-        # Then update the trip's cycle
-        self.trip.update_cycle_used()
 
     def __str__(self):
         return f"{self.status} from {self.start_time} to {self.end_time}"

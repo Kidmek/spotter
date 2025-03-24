@@ -5,6 +5,7 @@ import { LogTimeline } from "../molecules/LogTimeline";
 import { LogStats } from "../molecules/LogStats";
 import { Button } from "../atoms/Button";
 import { api } from "../services/api";
+import { LogGrid } from "../molecules/LogGrid";
 
 interface ELDStateManagerProps {
   tripId: string;
@@ -14,6 +15,7 @@ interface ELDStateManagerProps {
     lng: number;
     address: string;
   };
+  refreshTrip: () => void;
 }
 
 interface ValidationErrors {
@@ -26,6 +28,7 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
   tripId,
   trip,
   currentLocation,
+  refreshTrip,
 }) => {
   const [selectedStatus, setSelectedStatus] =
     useState<ELDLog["status"]>("ON_DUTY");
@@ -36,7 +39,6 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
-  const [logs, setLogs] = useState<ELDLog[]>(trip.eld_logs || []);
 
   // Reset form when currentLogs changes
   useEffect(() => {
@@ -84,8 +86,8 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
         location: currentLocation,
       };
 
-      const addedLog = await api.addLog(parseInt(tripId), newLog);
-      setLogs([...logs, addedLog]);
+      await api.addLog(parseInt(tripId), newLog);
+      refreshTrip();
     } catch (err: any) {
       if (err.response?.data) {
         // Handle API validation errors
@@ -153,7 +155,10 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow">
-        <LogTimeline logs={logs} />
+        <LogTimeline logs={trip.eld_logs ?? []} />
+      </div>
+      <div className="mt-4 print:mt-8">
+        <LogGrid logs={trip.eld_logs} />
       </div>
     </div>
   );
