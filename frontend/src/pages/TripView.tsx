@@ -282,7 +282,6 @@ export const TripView: React.FC = () => {
                 <ELDStateManager
                   tripId={trip.id?.toString() || ""}
                   trip={trip}
-                  currentLocation={trip.current_location}
                   refreshTrip={() => setRefetch(!refetch)}
                 />
               </div>

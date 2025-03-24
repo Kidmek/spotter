@@ -6,15 +6,12 @@ import { LogStats } from "../molecules/LogStats";
 import { Button } from "../atoms/Button";
 import { api } from "../services/api";
 import { LogGrid } from "../molecules/LogGrid";
+import { useLocation } from "../contexts/LocationContext";
+import { getAddressFromCoordinates } from "../util";
 
 interface ELDStateManagerProps {
   tripId: string;
   trip: Trip;
-  currentLocation: {
-    lat: number;
-    lng: number;
-    address: string;
-  };
   refreshTrip: () => void;
 }
 
@@ -27,7 +24,6 @@ interface ValidationErrors {
 export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
   tripId,
   trip,
-  currentLocation,
   refreshTrip,
 }) => {
   const [selectedStatus, setSelectedStatus] =
@@ -39,6 +35,7 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
+  const { currentLocation, isLoading: isLocationLoading } = useLocation();
 
   // Reset form when currentLogs changes
   useEffect(() => {
@@ -63,6 +60,11 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
       errors.remarks = "Remarks are required";
     }
 
+    if (!currentLocation) {
+      errors.status =
+        "Location is required. Please wait for location to be available.";
+    }
+
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -78,12 +80,17 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
     setIsLoading(true);
 
     try {
+      const address = await getAddressFromCoordinates(
+        currentLocation!.lat,
+        currentLocation!.lng
+      );
+
       const newLog: Omit<ELDLog, "id" | "created_at" | "start_time"> = {
         trip_id: tripId,
         status: selectedStatus,
         end_time: endTime,
         remarks,
-        location: currentLocation,
+        location: { ...currentLocation!, address },
       };
 
       await api.addLog(parseInt(tripId), newLog);
@@ -117,6 +124,7 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
     }
   };
 
+  console.log(currentLocation);
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-lg shadow">
@@ -142,7 +150,7 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
         <div className="mt-4">
           <Button
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={isLoading || isLocationLoading}
             className="w-full"
           >
             {isLoading ? "Adding Log Entry..." : "Add Log Entry"}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TripFormData } from "../types";
 import { Button } from "../atoms/Button";
-import { LocationInput } from "../molecules/LocationInput";
+import { MapInput } from "../atoms/MapInput";
 import { FormInput } from "../atoms/FormInput";
 
 interface TripFormProps {
@@ -84,8 +84,8 @@ export const TripForm: React.FC<TripFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
-        <LocationInput
-          label="Current Location"
+        <MapInput
+          label="Starting Location"
           value={formData.current_location}
           onChange={(location) =>
             setFormData((prev) => ({
@@ -94,9 +94,9 @@ export const TripForm: React.FC<TripFormProps> = ({
             }))
           }
           error={errors.current_address}
-          isCurrentLocation={true}
+          isCurrentLocation
         />
-        <LocationInput
+        <MapInput
           label="Pickup Location"
           value={formData.pickup_location}
           onChange={(location) =>
@@ -108,7 +108,7 @@ export const TripForm: React.FC<TripFormProps> = ({
           error={errors.pickup_address}
         />
 
-        <LocationInput
+        <MapInput
           label="Dropoff Location"
           value={formData.dropoff_location}
           onChange={(location) =>
