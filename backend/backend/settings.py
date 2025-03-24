@@ -81,10 +81,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'spotter',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'USER': 'postgrs',
+        'PASSWORD': 'ZpdSMYTTgxF2LK6KbOj14lnyqtfzBVVi',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': 'dpg-cvghniin91rc73bcm1p0-a',
     }
 }
 
