@@ -14,7 +14,7 @@ import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
+import { LogGrid } from "../molecules/LogGrid";
 // Fix for default marker icons in React-Leaflet
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
@@ -217,6 +217,10 @@ export const TripView: React.FC<TripViewProps> = ({
             trip={trip}
             currentLocation={trip.current_location}
           />
+        </div>
+
+        <div className="mt-4 print:mt-8">
+          <LogGrid logs={trip.eld_logs} />
         </div>
       </div>
     </div>
