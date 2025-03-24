@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ELDLog } from "../types";
+import { ELDLog, Trip } from "../types";
 import { LogForm } from "../molecules/LogForm";
 import { LogTimeline } from "../molecules/LogTimeline";
 import { LogStats } from "../molecules/LogStats";
@@ -8,7 +8,7 @@ import { api } from "../services/api";
 
 interface ELDStateManagerProps {
   tripId: string;
-  currentLogs: ELDLog[];
+  trip: Trip;
   currentLocation: {
     lat: number;
     lng: number;
@@ -24,7 +24,7 @@ interface ValidationErrors {
 
 export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
   tripId,
-  currentLogs,
+  trip,
   currentLocation,
 }) => {
   const [selectedStatus, setSelectedStatus] =
@@ -36,7 +36,7 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
-  const [logs, setLogs] = useState<ELDLog[]>(currentLogs);
+  const [logs, setLogs] = useState<ELDLog[]>(trip.eld_logs || []);
 
   // Reset form when currentLogs changes
   useEffect(() => {
@@ -44,7 +44,7 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
     setRemarks("");
     setError(null);
     setValidationErrors({});
-  }, [currentLogs]);
+  }, [trip.eld_logs]);
 
   const validateForm = (): boolean => {
     const errors: ValidationErrors = {};
@@ -149,7 +149,7 @@ export const ELDStateManager: React.FC<ELDStateManagerProps> = ({
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow">
-        <LogStats logs={logs} />
+        <LogStats trip={trip} />
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow">

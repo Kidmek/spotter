@@ -115,7 +115,7 @@ export const TripView: React.FC<TripViewProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-medium text-gray-500">
-              Current Cycle Used
+              Initial Cycle Used
             </h3>
             <p className="mt-1 text-sm text-gray-900">
               {trip.current_cycle_used} hours
@@ -214,7 +214,7 @@ export const TripView: React.FC<TripViewProps> = ({
           <h2 className="text-xl font-semibold text-gray-900 mb-4">ELD Logs</h2>
           <ELDStateManager
             tripId={trip.id?.toString() || ""}
-            currentLogs={trip.eld_logs || []}
+            trip={trip}
             currentLocation={trip.current_location}
           />
         </div>

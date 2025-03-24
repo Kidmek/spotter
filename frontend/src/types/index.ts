@@ -10,9 +10,13 @@ export interface Trip {
   pickup_location: Location;
   dropoff_location: Location;
   current_cycle_used: number;
+  cycle_used: number;
   created_at?: string;
   updated_at?: string;
   eld_logs?: ELDLog[];
+  driving_hours: number;
+  on_duty_hours: number;
+  off_duty_hours: number;
 }
 
 export interface ELDLog {
